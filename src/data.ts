@@ -24,6 +24,19 @@ export interface DetailedGuide {
   knobs: KnobCategory[];
 }
 
+export interface DocumentContent {
+  executiveSummary: {
+    coreStyle: string;
+    strategy: string;
+  };
+  corePhilosophy: {
+    title: string;
+    points: { title: string; content: string }[];
+  };
+  timeline: { time: string; activity: string; type: string }[];
+  conclusion: string;
+}
+
 export interface PatternData {
   id: string;
   title: string;
@@ -54,6 +67,7 @@ export interface PatternData {
     colors: string;
   };
   detailedGuide?: DetailedGuide;
+  documentContent?: DocumentContent;
 }
 
 export const patterns: PatternData[] = [
@@ -86,6 +100,28 @@ export const patterns: PatternData[] = [
       items: ["羊毛针织衫", "灰色休闲裤", "卡其色宽松风衣", "米色运动鞋"],
       materials: "羊毛混纺, 棉质混纺",
       colors: "卡其 / 灰 / 米"
+    },
+    documentContent: {
+      executiveSummary: {
+        coreStyle: "Athflow 将运动休闲与正式元素结合，突出舒适与高级感；Sadwear 指在悲伤时能带来安慰的服装，多为柔软宽松的居家/运动服饰；极简中性风格追求简洁利落的中性色调。整体穿搭以黑白灰等中性为底色，通过一两件亮色单品或金属配饰局部点亮。",
+        strategy: "根据情绪旋钮选用不同配色与舒适度（低落时偏柔软、暗色，自信/愉悦时加入亮点）；根据职业旋钮融入相应正式度（正式职场加西装或风衣，创意行业更休闲化）；根据城市场景考虑气候与氛围（寒冷城市重叠层次保暖，热带城市轻薄鲜艳）。"
+      },
+      corePhilosophy: {
+        title: "核心理念与搭配要点",
+        points: [
+          { title: "指定风格基调", content: "整体追求“看似随意、实则精心”的舒适感。Athflow强调运动休闲元素与正式服饰的反差混搭；Sadwear注重面料舒适、形态宽松；极简中性色调则以黑、白、灰为主，廓形简约。" },
+          { title: "亮点点缀", content: "在基础中性色系中，通过局部亮色（如亮黄、宝蓝、橘色等）或金属质感配饰（简约链条、耳饰等）来提亮造型。" },
+          { title: "情绪旋钮", content: "不同情绪影响配色与单品选择。心情低落时偏向柔和深色、加厚面料；心情轻松时可明快大胆地添加亮色或轻盈单品；平静时则以清爽浅色和舒适廓形为主。" },
+          { title: "职业旋钮", content: "根据职业场合调整正式度。正式职场场合可在舒适穿搭中加入西装外套、合身裤装等；创意或科技行业可更随性，混搭休闲单品。" },
+          { title: "城市场景", content: "依据所在城市气候和风格区分穿搭。寒冷城市注重保暖层次；热带城市更轻薄通风；国际时尚都市偏极简利落。" }
+        ]
+      },
+      timeline: [
+        { time: "08:00", activity: "上班", type: "正式西装+舒适针织【职业旋钮】" },
+        { time: "12:00", activity: "午后社交", type: "轻松Athflow运动风+亮色【情绪旋钮】" },
+        { time: "19:00", activity: "城市夜生活", type: "都市时尚搭配【城市旋钮】" }
+      ],
+      conclusion: "本文从Athflow、Sadwear与极简中性的结合入手，展示了三个旋钮下灵活多变的穿搭方案。核心在于舒适为底，细节取胜：整体以中性简约为基础，同时通过一两处亮色或金属质感配件来增添活力和层次感。"
     },
     detailedGuide: {
       knobs: [

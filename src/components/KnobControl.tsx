@@ -57,16 +57,18 @@ export default function KnobControl({ labels, activeIndex, onSelect }: KnobContr
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={`
-          flex items-center gap-3 px-5 py-3 rounded-full shadow-2xl transition-all border
+          flex items-center gap-3 rounded-full shadow-2xl transition-all border
           ${activeIndex !== null 
-            ? 'bg-gray-900 text-white border-gray-800' 
-            : 'bg-white text-gray-800 border-gray-200'
+            ? 'bg-gray-900 text-white border-gray-800 px-5 py-3' 
+            : 'bg-white text-gray-800 border-gray-200 p-4'
           }
         `}
       >
-        <span className="text-sm font-bold tracking-wide uppercase">
-          {activeIndex !== null ? labels[activeIndex] : 'Select Pattern'}
-        </span>
+        {activeIndex !== null && (
+          <span className="text-sm font-bold tracking-wide uppercase">
+            {labels[activeIndex]}
+          </span>
+        )}
         <div className={`p-1 rounded-full ${activeIndex !== null ? 'bg-white/20' : 'bg-gray-100'}`}>
           {isOpen ? <X size={16} /> : <Menu size={16} />}
         </div>

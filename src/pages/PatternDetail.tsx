@@ -2,8 +2,159 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, BookOpen, Sparkles, Info } from 'lucide-react';
+import { ArrowLeft, BookOpen, Sparkles, Info, Clock, CheckCircle2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { patterns } from '../data';
+
+const athflowMarkdown = `# Athflow/Sadwear极简风格穿搭指南
+
+## 执行摘要
+
+- **核心风格**：Athflow 将运动休闲与正式元素结合，突出**舒适与高级感**【68†L512-L520】【68†L563-L570】；Sadwear 指在悲伤时能带来安慰的服装，多为柔软宽松的居家/运动服饰【36†L53-L60】【36†L92-L100】；极简中性风格追求简洁利落的中性色调【69†L93-L100】。整体穿搭以黑白灰等中性为底色，通过一两件亮色单品或金属配饰局部点亮【40†L84-L90】【40†L98-L101】。  
+- **搭配策略**：根据**情绪旋钮**选用不同配色与舒适度（低落时偏柔软、暗色，自信/愉悦时加入亮点）；根据**职业旋钮**融入相应正式度（正式职场加西装或风衣，创意行业更休闲化）；根据**城市场景**考虑气候与氛围（寒冷城市重叠层次保暖，热带城市轻薄鲜艳）。本报告分别给出情绪/职业/城市旋钮下的穿搭示例（每类5套），涵盖女性、男性和中性三种类型的建议，并列出单品、材质、颜色、预算及搭配理由。
+
+## 核心理念与搭配要点
+
+- **指定风格基调**：整体追求“**看似随意、实则精心**”的舒适感【68†L512-L520】【36†L53-L60】。Athflow强调运动休闲元素（卫衣、运动裤等）与正式服饰（西装外套、风衣等）的反差混搭【68†L563-L570】【68†L568-L570】；Sadwear注重面料舒适、形态宽松，如抓绒、棉麻等软质材料【36†L92-L100】；极简中性色调则以黑、白、灰为主，廓形简约，避免繁杂图案【69†L93-L100】。  
+- **亮点点缀**：在基础中性色系中，通过**局部亮色**（如亮黄、宝蓝、橘色等）或金属质感配饰（简约链条、耳饰等）来提亮造型【40†L84-L90】【40†L98-L101】。例如可用彩色围巾、皮带、金属胸针或亮色鞋履为低调装扮增添焦点。  
+- **情绪旋钮**：不同情绪影响配色与单品选择。心情低落时偏向柔和深色、加厚面料（表现Sadwear的安慰感）【36†L92-L100】；心情轻松时可明快大胆地添加亮色或轻盈单品；平静时则以清爽浅色和舒适廓形为主。  
+- **职业旋钮**：根据职业场合调整正式度。正式职场场合可在舒适穿搭中加入西装外套、合身裤装等，保持干练干净【68†L568-L570】；创意或科技行业可更随性，混搭休闲单品，如棒球帽、特色印花T恤等。  
+- **城市场景**：依据所在城市气候和风格区分穿搭。寒冷城市注重保暖层次，如羽绒服、大衣+毛衣+围巾组合；热带城市更轻薄通风，选用亚麻、薄棉等透气面料，可增加亮色呼应阳光环境；国际时尚都市偏极简利落，休闲与时髦兼顾。  
+
+## 情绪旋钮示例
+
+下面按不同情绪场景给出穿搭示例，每套含单品清单、材质、配色和预算，并说明搭配亮点。
+
+### 忧郁/低落
+
+- **场景说明**：心情低落时，选择柔软、包裹感强的单品来安慰自己。配色以灰、驼、深蓝等沉稳色为主，面料侧重羊毛、抓绒、棉麻等舒适材质【36†L92-L100】。搭配理由：以Sadwear的舒适面料为核心，同时用中性简约的廓形避免沉闷感；可添加一条柔色围巾或简单金属饰品作为点缀。
+- **示例套装**：  
+  | # | 单品清单（上衣/下装/外套/鞋/包/配饰）                                              | 材质             | 主要颜色 | 预算    |
+  |---|------------------------------------------------------------------------|------------------|---------|---------|
+  | 1 | 上衣：深蓝羊毛衫<br>下装：灰色直筒休闲裤<br>外套：卡其色宽松风衣<br>鞋：米色运动鞋<br>包：黑色单肩包<br>配饰：银色细项链      | 羊毛/棉/涤纶混纺 | 卡其/灰/深蓝 | 中（800） |
+  | 2 | 上衣：灰色抓绒卫衣<br>下装：黑色运动裤<br>外套：深蓝羽绒服<br>鞋：黑色雪地靴<br>包：灰色双肩背包<br>配饰：驼色针织帽    | 抓绒/棉/羽绒    | 黑/灰/深蓝   | 高（>2000） |
+  | 3 | 上衣：米白宽松针织衫<br>下装：驼色阔腿裤<br>外套：黑色中长棉服<br>鞋：棕色高帮帆布鞋<br>包：灰色托特包<br>配饰：金色手链    | 针织/棉/尼龙    | 驼/米白/黑   | 高（>2000） |
+  | 4 | 上衣：藏青卫衣（连帽）<br>下装：深灰毛呢裤<br>外套：灰色针织大衣<br>鞋：黑色平底皮鞋<br>包：深棕公文包<br>配饰：银质手表  | 棉/羊毛/皮革    | 藏青/灰/黑   | 中（1200） |
+  | 5 | 上衣：黑色印花T恤<br>下装：深蓝牛仔裤<br>外套：卡其色针织开衫<br>鞋：白色运动鞋<br>包：米灰斜挎包<br>配饰：贝雷帽   | 棉/牛仔/针织    | 卡其/黑/白   | 低（<500）  |
+
+- **搭配理由**：上述套装均以Sadwear风格的柔软材质和宽松剪裁为基础【36†L92-L100】。例如套装1中羊毛衫和风衣提供温暖包裹感，银色项链作为金属点缀提升精致度【40†L98-L101】；套装4在黑白灰的简约调中加入银手表等配饰，体现极简中性风格【69†L93-L100】。整体注重舒适度，让服饰成为情绪的安抚物。  
+- **替代建议**：同色系的毛衣可替换为羊绒衫；休闲裤可选深灰色棉裤；风衣可换成深灰大衣；鞋款可换成浅灰运动鞋；配饰可更换为银色细链耳环或丝巾。购买参考：可在ZARA、优衣库或H&M等官网寻找类似款式，如ZARA的针织衫、优衣库的羽绒服等。  
+
+### 平静/安逸
+
+- **场景说明**：平和心境下，选择清新浅色和舒适剪裁的搭配。面料以棉、亚麻、轻薄针织为主，配色可考虑米色、浅蓝、淡绿等柔和色调。搭配理由：整体简洁干净，保持Athflow的舒适度；可通过简约饰品或亮色鞋履增加层次。  
+- **示例套装**：  
+  | # | 单品清单（上衣/下装/外套/鞋/包/配饰）                                   | 材质         | 主要颜色 | 预算    |
+  |---|---------------------------------------------------------------|------------|---------|---------|
+  | 1 | 上衣：米色宽松针织衫<br>下装：白色九分裤<br>外套：浅灰西装外套<br>鞋：米白板鞋<br>包：棕色托特包<br>配饰：珍珠耳钉           | 羊毛混纺/棉  | 米色/灰色/白 | 中（800） |
+  | 2 | 上衣：浅蓝圆领T恤<br>下装：深灰休闲裤<br>外套：白色针织开衫<br>鞋：灰色运动鞋<br>包：灰蓝腰包<br>配饰：银色项链                | 棉/棉/针织  | 浅蓝/灰   | 低（<500）  |
+  | 3 | 上衣：淡绿羊毛衫<br>下装：藏青直筒西装裤<br>外套：米灰色风衣<br>鞋：白色板鞋<br>包：卡其单肩包<br>配饰：细金色腰带             | 羊毛/涤棉  | 绿/藏青/米  | 中（1200） |
+  | 4 | 上衣：灰色棉卫衣<br>下装：米白宽松运动裤<br>外套：黑色针织马甲<br>鞋：白色运动鞋<br>包：深棕双肩包<br>配饰：黑色棒球帽          | 棉/针织   | 灰/米白/黑 | 低（<500）  |
+  | 5 | 上衣：白色衬衫<br>下装：浅卡其休闲裤<br>外套：灰蓝针织大衣<br>鞋：棕色乐福鞋<br>包：藏蓝手拿包<br>配饰：细珍珠项链              | 棉/羊毛混纺 | 白/卡其/灰  | 高（>2000） |
+
+- **搭配理由**：套装2的灰白配色清新简约，棉质休闲裤和针织衫保证舒适；亮色围巾可作为点缀提神。套装5以白衬衫和卡其裤为基础，灰蓝大衣增添层次，珍珠项链与淡色调相得益彰，呈现低调优雅的中性风范【69†L93-L100】【40†L84-L90】。整体搭配轻盈利落，恰到好处地体现Athflow与极简风格的轻松平衡。  
+- **替代建议**：可用纯色衬衫代替针织衫；裤装可换为淡灰九分裤；风衣可选米色Trench款；鞋类可替换为浅灰小白鞋；配饰可换为简约金属耳环或丝巾。购买参考：H&M官网上的针织衫、Uniclo的亚麻T恤等都是不错选择。  
+
+### 轻松/愉悦
+
+- **场景说明**：心情愉悦时，可大胆加入亮色或趣味单品。在Athflow舒适基底上，选用彩色上衣或印花元素，展现活力状态。配色可互补活泼，面料可选透气棉质。搭配理由：亮色单品成为焦点，与基础中性色调形成对比；整体造型随性中不失摩登感。  
+- **示例套装**：  
+  | # | 单品清单（上衣/下装/外套/鞋/包/配饰）                                | 材质       | 主要颜色 | 预算    |
+  |---|----------------------------------------------------------|----------|---------|---------|
+  | 1 | 上衣：亮黄卫衣<br>下装：深蓝牛仔裤<br>外套：浅灰针织开衫<br>鞋：白色板鞋<br>包：藏蓝双肩包<br>配饰：红色格纹围巾      | 棉/牛仔/针织 | 黄/蓝/红  | 低（<500）  |
+  | 2 | 上衣：红色条纹T恤<br>下装：黑色休闲裤<br>外套：军绿色机能夹克<br>鞋：黑色运动鞋<br>包：黑色腰包<br>配饰：金属项链       | 棉/棉/尼龙  | 红/绿/黑  | 中（1200） |
+  | 3 | 上衣：白色印花短T<br>下装：浅卡其工装短裤<br>外套：牛仔外套<br>鞋：红白拼色运动鞋<br>包：灰色帆布包<br>配饰：棒球帽      | 棉/棉/牛仔  | 白/卡其/红 | 中（1000） |
+  | 4 | 上衣：薄荷绿针织衫<br>下装：白色直筒裤<br>外套：浅咖色风衣<br>鞋：米灰休闲鞋<br>包：灰蓝斜挎包<br>配饰：金色戒指      | 羊毛/棉/涤纶 | 绿/咖啡/白 | 中（1500） |
+  | 5 | 上衣：亮蓝帽衫<br>下装：灰色运动裤<br>外套：粉色羊毛大衣<br>鞋：白色老爹鞋<br>包：白色托特包<br>配饰：银链手镯        | 棉/羊毛/棉 | 蓝/粉/白  | 中（1100） |
+
+- **搭配理由**：愉悦场景强调色彩和活力：套装3中的红白运动鞋与印花T相呼应，为浅色牛仔装增添亮点；套装5的粉色大衣与亮蓝卫衣大胆撞色，点亮整体造型【40†L84-L90】；套装4的薄荷绿毛衣则以柔和亮色烘托清新氛围，金色戒指等小配饰增加精致感【40†L98-L101】。每套均保持Athflow的宽松休闲感，同时局部点缀符合“局部亮色点亮”原则。  
+- **替代建议**：上衣可替换为其它鲜艳色系，如亮橙、宝蓝；裤装可选深灰或卡其休闲裤；外套可选短外套或彩色风衣；鞋履可替换为亮色板鞋；配饰可用彩色丝巾或运动帽。购买参考：ZARA的印花T恤、Nike官网的运动鞋等提供丰富的颜色选择。
+
+## 职业旋钮示例
+
+不同职业场合对穿着正式度有不同要求，但统一在Athflow/Sadwear基调下体现舒适与专业。
+
+### 正式职场（商务/行政）
+
+- **场景说明**：职场场合需得体专业，但可在舒适底色中增添正式元素。选择合身西装外套、修身裤装等单品，面料多用羊毛混纺、棉质等有型舒适材质【68†L568-L570】。搭配理由：整体色调以黑、灰、驼为主，通过衬衫或针织衫保持简单；可用金属纽扣、珍珠胸针等细节体现精致。  
+- **示例套装**：  
+  | # | 单品清单（上衣/下装/外套/鞋/包/配饰）                                        | 材质               | 主要颜色    | 预算    |
+  |---|------------------------------------------------------------|--------------------|------------|---------|
+  | 1 | 上衣：白衬衫<br>下装：深灰西装裤<br>外套：黑色西装外套<br>鞋：黑色皮鞋<br>包：黑色公文包<br>配饰：银色手表    | 棉/羊毛混纺        | 黑/灰/白    | 中（1500） |
+  | 2 | 上衣：浅蓝针织衫<br>下装：黑色直筒休闲裤<br>外套：藏蓝大衣<br>鞋：黑色乐福鞋<br>包：棕色托特包<br>配饰：领带/丝巾    | 羊毛/棉混/皮革      | 蓝/黑/棕    | 中（1200） |
+  | 3 | 上衣：白高领针织衫<br>下装：卡其西装裤<br>外套：灰色呢子大衣<br>鞋：灰色高跟短靴<br>包：深蓝斜挎包<br>配饰：珍珠耳钉 | 羊毛/羊绒混纺      | 灰/卡其/白   | 高（>2000） |
+  | 4 | 上衣：黑色细条纹衬衫<br>下装：深灰收腰裙裤（女性）/直筒裤（男性）<br>外套：咖色风衣<br>鞋：黑色短靴<br>包：深灰手袋<br>配饰：金属腰带  | 棉/羊毛混纺       | 黑/灰/咖    | 高（>2000） |
+  | 5 | 上衣：白色基础T恤<br>下装：灰色锥形西裤<br>外套：驼色针织西装外套<br>鞋：白色运动鞋（换为皮鞋更正式）<br>包：灰色手提包<br>配饰：皮带 | 棉/混纺/皮革      | 驼/灰/白    | 低（<500）  |
+
+- **搭配理由**：示例1传统黑白灰搭配稳重内敛，舒适材质的西装外套使得Athflow混搭更自然【68†L568-L570】；示例3利用高领羊毛衫替代正式衬衫，保留温暖同时显出干练；珍珠耳饰和丝巾等配件为简洁商务风添加亮点【40†L98-L101】。整体注重线条剪裁与层次搭配，体现职业端庄且不乏舒适性的理念。  
+- **替代建议**：可将高跟鞋换为低跟鞋或Loafer；风衣可选经典Trench款；包款可换为简约手提包；衬衫可换成高级针织上衣；配饰可选简约项链或袖扣。购买参考：H&M的西装套装、COS的优雅衬衫、ZARA的风衣等。  
+
+### 创意行业
+
+- **场景说明**：创意/设计等行业允许更灵活的穿搭。基本保持极简中性色调，可大胆添加个性单品：如图案T恤、牛仔或皮革元素、个性饰品等。搭配理由：以休闲Athflow单品为主，部分地方用亮色或印花表达创意感，同时维持专业度。  
+- **示例套装**：  
+  | # | 单品清单（上衣/下装/外套/鞋/包/配饰）                                            | 材质            | 主要颜色  | 预算    |
+  |---|--------------------------------------------------------------|---------------|----------|---------|
+  | 1 | 上衣：牛仔衬衫<br>下装：黑色束脚裤<br>外套：灰色皮夹克<br>鞋：白色运动鞋<br>包：黑色斜跨包<br>配饰：金属项链         | 牛仔/皮革/棉   | 牛仔蓝/黑   | 低（<500）  |
+  | 2 | 上衣：白色长款T恤<br>下装：卡其宽松裤<br>外套：深蓝针织大衣<br>鞋：灰色运动鞋<br>包：亮黄单肩包<br>配饰：棒球帽    | 棉/混纺      | 白/卡其/黄  | 中（1000） |
+  | 3 | 上衣：酒红高领针织衫<br>下装：黑色直筒裤<br>外套：黑色运动外套<br>鞋：黑皮靴<br>包：酒红皮革手提<br>配饰：黑色太阳镜  | 针织/皮革/棉 | 酒红/黑     | 中（1200） |
+  | 4 | 上衣：白色印花衬衫<br>下装：深灰休闲西裤<br>外套：卡其风衣<br>鞋：白板鞋<br>包：棕色邮差包<br>配饰：银色戒指      | 棉/棉混/棉   | 白/灰/卡其  | 中（1000） |
+  | 5 | 上衣：黑色拼色卫衣<br>下装：深蓝牛仔裤<br>外套：米白长外套<br>鞋：棕色运动鞋<br>包：黑色双肩包<br>配饰：彩色丝巾   | 棉/羊毛/棉  | 黑/白/棕    | 低（<500）  |
+
+- **搭配理由**：示例2亮黄包作为点缀在中性色中突出创意个性，棒球帽增加街头感；示例4印花衬衫搭配风衣，将正式与休闲混合，印花是亮点焦点；示例5拼色卫衣和牛仔裤组合体现街头Athflow风，同时米白外套提升层次。整体轮廓宽松，体现极简中性思路中的自由随意【69†L93-L100】。  
+- **替代建议**：可用不同颜色牛仔裤或休闲裤替换；外套可换成夹克或针织开衫；鞋子可选板鞋或老爹鞋；配饰可用项链、腕表等精致配件增加层次。购买参考：优衣库印花衬衫、ZARA拼色卫衣、Nike运动鞋等时尚运动休闲款。  
+
+## 城市场景示例
+
+不同城市类型对穿衣舒适度和风格氛围有不同要求。以下以典型城市为例给出参考。
+
+### 寒冷城市（如北京冬季）
+
+- **场景说明**：严寒环境下注重保暖性和层次感。主要使用羊毛大衣、羽绒服、加绒卫衣等厚实单品。配色以黑、灰、驼等稳重色为主，可通过一条围巾或帽子来增加明亮度。搭配理由：在寒风中保持舒适的同时，尽量保持Athflow的宽松风格。如厚实大衣搭配舒适裤装，再加围巾增加暖意。  
+- **示例套装**：  
+  | # | 单品清单                                               | 材质         | 主要颜色 | 预算    |
+  |---|---------------------------------------------------|------------|---------|---------|
+  | 1 | 上：黑色抓绒卫衣<br>下：灰色羊毛直筒裤<br>外：军绿色羽绒服<br>鞋：黑色雪地靴<br>包：黑色双肩包<br>配饰：灰色毛线围巾       | 棉/羊毛/羽绒 | 军绿/黑/灰 | 高（>2000） |
+  | 2 | 上：藏青厚毛衣<br>下：卡其绒裤<br>外：深灰中长大衣<br>鞋：棕色保暖靴<br>包：驼色手提包<br>配饰：米色针织帽         | 羊毛/棉/呢绒 | 深灰/藏青/卡其 | 中（1500） |
+  | 3 | 上：米白抓绒连帽衫<br>下：黑色运动裤<br>外：深蓝羽绒马甲<br>鞋：白灰撞色运动鞋<br>包：藏蓝挎包<br>配饰：黑色手套         | 抓绒/涤纶    | 蓝/白/黑   | 中（1200） |
+  | 4 | 上：驼色半高领羊绒衫<br>下：灰色针织裤裙<br>外：黑色长款呢子大衣<br>鞋：黑色平底靴<br>包：灰色挎包<br>配饰：棕色围巾        | 羊绒/羊毛    | 驼/黑/灰   | 高（>2000） |
+  | 5 | 上：灰色棉卫衣<br>下：藏青牛仔裤<br>外：黑色棉服外套<br>鞋：白色跑鞋<br>包：军绿色双肩包<br>配饰：深红针织围巾            | 棉/牛仔     | 黑/灰/藏青 | 中（1000） |
+
+- **搭配理由**：各套装均兼顾保暖与风格。如套装2驼色大衣和绒裤配色沉稳，搭配毛衣和针织帽提升层次感；套装3利用羽绒马甲替代外套，保暖同时更灵活；搭配纹理围巾增加兴趣点。整体在保障防寒的同时保持Athflow式宽松比例和极简层次。【36†L92-L100】【68†L568-L570】  
+- **替代建议**：可选羊绒大衣或棉服代替羽绒服；裤装可换成加绒牛仔裤或打底裤；鞋类推荐防滑高帮鞋；围巾或帽子可选亮色提亮；配饰可用简约羊绒帽或长手套。购买参考：UNIQLO的高保暖外套、ZARA的羊毛大衣等冬季必备。  
+
+### 温暖城市（如广州/厦门冬季）
+
+- **场景说明**：暖冬城市气温适中，多选轻薄外套或针织衫。配色可以更明亮，如米色、浅棕、粉色等浅色系，与冬日暖阳相呼应。搭配理由：强调透气舒适，同时小件上可以有跳色。  
+
+- **示例套装**：  
+  | # | 单品清单                                               | 材质        | 主要颜色    | 预算    |
+  |---|---------------------------------------------------|-----------|------------|---------|
+  | 1 | 上：白色亚麻衬衫<br>下：浅卡其休闲裤<br>外：淡粉色针织开衫<br>鞋：米白帆布鞋<br>包：棕色挎包<br>配饰：浅蓝丝巾     | 亚麻/棉   | 白/卡其/粉   | 低（<500）  |
+  | 2 | 上：薄荷绿针织衫<br>下：白色九分裤<br>外：浅灰风衣<br>鞋：灰色平底鞋<br>包：米黄色手提包<br>配饰：银色耳钉      | 棉/涤棉   | 绿/灰/白    | 中（800） |
+  | 3 | 上：牛仔衬衫<br>下：米色短裤<br>外：蓝色牛仔外套<br>鞋：白色运动鞋<br>包：灰色腰包<br>配饰：金属项链       | 牛仔/棉    | 牛仔蓝/米/白 | 低（<500）  |
+  | 4 | 上：白色宽松T恤<br>下：橄榄绿工装裤<br>外：卡其色轻薄风衣<br>鞋：棕色平底鞋<br>包：军绿斜挎包<br>配饰：草帽   | 棉/棉    | 白/橄榄绿/卡其 | 低（<500）  |
+  | 5 | 上：灰蓝针织衫<br>下：黑色直筒牛仔裤<br>外：浅灰连帽卫衣外套<br>鞋：白色板鞋<br>包：藏青双肩包<br>配饰：银链   | 棉/棉    | 灰蓝/黑/白   | 中（1000） |
+
+- **搭配理由**：套装1用粉色开衫搭配米白鞋营造轻快感，丝巾增加清爽细节；套装3全浅色调配色清新，牛仔套装活泼休闲；套装5在灰蓝调中保持舒适，银饰点睛又不突兀。整体适应温暖气候，依然保留Athflow的舒适感和极简中性剪裁。  
+- **替代建议**：可用高弹力牛仔裤替换工装裤；T恤可替换彩色印花款；鞋类可换为凉鞋或乐福鞋；配饰如太阳镜或简约项链也可增色。购买参考：ZARA的针织开衫、优衣库的亚麻衬衫等。  
+
+## Merlin流程图示例
+
+\`\`\`mermaid
+timeline
+    title 典型一日穿搭示例
+    08:00 : 上班（正式西装+舒适针织）【职业旋钮】  
+    12:00 : 午后社交（轻松Athflow运动风+亮色）【情绪旋钮】  
+    19:00 : 城市夜生活（都市时尚搭配）【城市旋钮】
+\`\`\`
+
+## 小结
+
+本文从**Athflow**、**Sadwear**与**极简中性**的结合入手，展示了三个旋钮下灵活多变的穿搭方案。核心在于**舒适为底，细节取胜**：整体以中性简约为基础，同时通过一两处亮色或金属质感配件来增添活力和层次感【40†L84-L90】【69†L93-L100】。各场景示例涵盖女性/男性/中性三种版本的可调整要点，使读者在执行穿搭时能根据个人性别与喜好进行替换。最终搭配原则：在保持Athflow休闲、高级感与Sadwear舒适度的同时，借助简约轮廓和点睛配饰，创造适合不同情绪、职业与城市氛围的高效时尚造型。  
+
+**参考资料**：本文参考了品牌官网与时尚媒体关于Athflow、Sadwear和极简中性风格的定义和示例【68†L512-L520】【36†L53-L60】【69†L93-L100】【40†L84-L90】，并结合街拍素材及电商资源整理出具体单品方案。图片示例来自公开街拍，购买链接可参见ZARA、优衣库、H&M等品牌官网。`;
 
 export default function PatternDetail() {
   const { id } = useParams();
@@ -20,7 +171,7 @@ export default function PatternDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F0F2F5] font-sans text-gray-900">
+    <div className="min-h-screen bg-[#F9FAFB] font-sans text-gray-900">
       {/* Header / Nav */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -35,161 +186,227 @@ export default function PatternDetail() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      <main className="max-w-5xl mx-auto px-4 md:px-8 py-12 space-y-20">
         
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Left: Visual & Core Info */}
+        {/* 1. Hero & Executive Summary */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative aspect-[3/4] md:aspect-square rounded-2xl overflow-hidden shadow-2xl"
           >
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
-              <img 
-                src={pattern.illustration} 
-                alt={pattern.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 p-8 text-white">
-                <h2 className="text-4xl md:text-5xl font-serif italic mb-2">{pattern.title}</h2>
-                <p className="text-lg font-medium tracking-wider uppercase opacity-90" style={{ color: pattern.colorTheme.accent }}>
-                  {pattern.subtitle}
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-2 mb-4 text-sm font-bold" style={{ color: pattern.colorTheme.secondary }}>
-                <Sparkles size={18} />
-                <span>穿搭心理学 / Psychology</span>
-              </div>
-              <p className="text-gray-600 leading-relaxed text-lg">
-                {pattern.description}
+            <img 
+              src={pattern.illustration} 
+              alt={pattern.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 p-8 text-white">
+              <h2 className="text-5xl font-serif italic mb-2">{pattern.title}</h2>
+              <p className="text-lg font-medium tracking-wider uppercase opacity-90" style={{ color: pattern.colorTheme.accent }}>
+                {pattern.subtitle}
               </p>
-              <div className="flex flex-wrap gap-2 mt-6">
-                {pattern.tags.map(tag => (
-                  <span key={tag} className="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           </motion.div>
 
-          {/* Right: Mechanism & Guide */}
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="space-y-8"
           >
-            {/* Mechanism Card */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-                <Info size={18} className="text-gray-400" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-800">{pattern.mechanism.title}</h3>
+            <div>
+              <div className="flex items-center gap-2 mb-4 text-sm font-bold uppercase tracking-wider text-gray-400">
+                <Sparkles size={16} />
+                <span>Executive Summary</span>
               </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
+                {pattern.description}
+              </h3>
               
-              <div className="space-y-6">
-                {pattern.mechanism.points.map((point, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <div className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: pattern.colorTheme.accent }} />
-                    <div>
-                      <span className="text-sm font-bold text-gray-800 block mb-1">{point.label}</span>
-                      <span className="text-sm text-gray-600 leading-relaxed">{point.desc}</span>
-                    </div>
+              {pattern.documentContent && (
+                <div className="space-y-6 text-gray-600 leading-relaxed">
+                  <div>
+                    <strong className="text-gray-900 block mb-1">Core Style</strong>
+                    <p>{pattern.documentContent.executiveSummary.coreStyle}</p>
                   </div>
-                ))}
-              </div>
-
-              {pattern.mechanism.dataGraph && (
-                <div className="mt-8 bg-gray-50 rounded-xl p-6 flex items-center justify-between">
-                  <span className="font-medium text-gray-500">{pattern.mechanism.dataGraph.label}</span>
-                  <div className="flex items-end gap-2">
-                    <div className="w-3 h-6 bg-gray-200 rounded-t-sm" />
-                    <div className="w-3 h-8 bg-gray-300 rounded-t-sm" />
-                    <div className="w-3 h-12 rounded-t-sm" style={{ backgroundColor: pattern.colorTheme.accent }} />
-                    <span className="ml-3 text-2xl font-bold" style={{ color: pattern.colorTheme.secondary }}>
-                      {pattern.mechanism.dataGraph.value}
-                    </span>
+                  <div>
+                    <strong className="text-gray-900 block mb-1">Strategy</strong>
+                    <p>{pattern.documentContent.executiveSummary.strategy}</p>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Detailed Guide Section */}
-            {pattern.detailedGuide && (
-              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 ring-1 ring-black/5">
-                <div className="flex items-center gap-2 mb-6">
-                  <BookOpen size={20} className="text-gray-400" />
-                  <h3 className="text-lg font-bold uppercase tracking-wider text-gray-800">Style Guide</h3>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {pattern.tags.map(tag => (
+                <span key={tag} className="px-3 py-1 text-xs font-medium bg-white border border-gray-200 text-gray-600 rounded-full">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </section>
 
-                {/* Knob Tabs */}
-                <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-                  {pattern.detailedGuide.knobs.map((knob, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveKnobIndex(idx)}
-                      className={`px-5 py-2.5 text-sm font-medium rounded-full transition-all whitespace-nowrap flex-shrink-0 ${
-                        activeKnobIndex === idx 
-                          ? 'bg-gray-900 text-white shadow-md scale-105' 
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                    >
-                      {knob.title}
-                    </button>
-                  ))}
-                </div>
+        {/* 2. Core Philosophy */}
+        {pattern.documentContent && (
+          <section>
+            <div className="flex items-center gap-2 mb-8">
+              <div className="h-px flex-1 bg-gray-200" />
+              <h3 className="text-xl font-serif italic text-gray-400">Core Philosophy</h3>
+              <div className="h-px flex-1 bg-gray-200" />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {pattern.documentContent.corePhilosophy.points.map((point, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <h4 className="text-lg font-bold text-gray-800 mb-3" style={{ color: pattern.colorTheme.secondary }}>
+                    {point.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {point.content}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
 
-                {/* Active Knob Content */}
-                <div className="space-y-8">
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <p className="text-sm text-gray-600 italic leading-relaxed">
-                      {pattern.detailedGuide.knobs[activeKnobIndex].description}
-                    </p>
+        {/* 3. Mechanism (Psychology) */}
+        <section className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-2 mb-4 text-sm font-bold uppercase tracking-wider text-gray-400">
+                <Info size={16} />
+                <span>Mechanism</span>
+              </div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">{pattern.mechanism.title}</h3>
+              {pattern.mechanism.dataGraph && (
+                <div className="mt-8 bg-gray-50 rounded-xl p-6">
+                  <span className="font-medium text-gray-500 block mb-4">{pattern.mechanism.dataGraph.label}</span>
+                  <div className="flex items-end gap-2 h-32">
+                    <div className="w-8 bg-gray-200 rounded-t-md h-[40%]" />
+                    <div className="w-8 bg-gray-300 rounded-t-md h-[60%]" />
+                    <div className="w-8 rounded-t-md h-[90%]" style={{ backgroundColor: pattern.colorTheme.accent }} />
                   </div>
-                  
+                  <span className="block mt-4 text-4xl font-bold" style={{ color: pattern.colorTheme.secondary }}>
+                    {pattern.mechanism.dataGraph.value}
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            <div className="md:col-span-2 space-y-8">
+              {pattern.mechanism.points.map((point, idx) => (
+                <div key={idx} className="flex gap-6">
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xl" style={{ backgroundColor: pattern.colorTheme.secondary }}>
+                    {idx + 1}
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900 mb-2">{point.label}</h4>
+                    <p className="text-gray-600 leading-relaxed">{point.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Style Guide (Interactive Knobs) */}
+        {pattern.detailedGuide && (
+          <section>
+            <div className="flex items-center gap-2 mb-8">
+              <BookOpen size={24} className="text-gray-800" />
+              <h3 className="text-2xl font-bold text-gray-900">Style Guide</h3>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              {/* Knob Tabs */}
+              <div className="flex border-b border-gray-100 bg-gray-50/50 p-2 overflow-x-auto">
+                {pattern.detailedGuide.knobs.map((knob, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveKnobIndex(idx)}
+                    className={`flex-1 min-w-[120px] py-3 px-4 text-sm font-bold rounded-xl transition-all ${
+                      activeKnobIndex === idx 
+                        ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200' 
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {knob.title}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-6 md:p-10">
+                <div className="mb-10 max-w-3xl">
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">{pattern.detailedGuide.knobs[activeKnobIndex].title}</h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    {pattern.detailedGuide.knobs[activeKnobIndex].description}
+                  </p>
+                </div>
+                
+                <div className="space-y-12">
                   {pattern.detailedGuide.knobs[activeKnobIndex].scenarios.map((scenario, sIdx) => (
-                    <div key={sIdx} className="space-y-4">
-                      <div className="flex items-baseline gap-3 border-b border-gray-100 pb-2">
-                        <h4 className="text-base font-bold text-gray-800">{scenario.title}</h4>
-                        <span className="text-sm text-gray-500">{scenario.description}</span>
+                    <div key={sIdx}>
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="h-px flex-1 bg-gray-200" />
+                        <span className="text-sm font-bold uppercase tracking-widest text-gray-400">{scenario.title}</span>
+                        <div className="h-px flex-1 bg-gray-200" />
                       </div>
                       
-                      <div className="grid grid-cols-1 gap-4">
+                      <p className="text-sm text-gray-500 mb-6 text-center max-w-2xl mx-auto">{scenario.description}</p>
+
+                      <div className="grid grid-cols-1 gap-6">
                         {scenario.outfits.map((outfit) => (
-                          <div key={outfit.id} className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300">
-                            <div className="flex flex-col sm:flex-row">
-                              {outfit.image && (
-                                <div className="sm:w-48 h-48 sm:h-auto flex-shrink-0 bg-gray-100 relative overflow-hidden">
-                                  <img 
-                                    src={outfit.image} 
-                                    alt="outfit" 
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                                  />
+                          <div key={outfit.id} className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row">
+                            {outfit.image && (
+                              <div className="md:w-64 h-64 md:h-auto flex-shrink-0 bg-gray-100 relative overflow-hidden">
+                                <img 
+                                  src={outfit.image} 
+                                  alt="outfit" 
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                />
+                              </div>
+                            )}
+                            <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
+                              <div className="flex justify-between items-start mb-4">
+                                 <div>
+                                   <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Outfit Recommendation</span>
+                                   <h5 className="text-lg font-bold text-gray-900">Style #{outfit.id.split('-').pop()}</h5>
+                                 </div>
+                                 <span className="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">{outfit.budget}</span>
+                              </div>
+                              
+                              <div className="space-y-4 mb-6">
+                                <div>
+                                  <span className="text-xs font-bold text-gray-400 uppercase block mb-1">Items</span>
+                                  <p className="text-sm text-gray-700 font-medium">{outfit.items}</p>
                                 </div>
-                              )}
-                              <div className="flex-1 p-5">
-                                <div className="flex justify-between items-start mb-2">
-                                   <span className="text-sm font-bold text-gray-900">Outfit #{outfit.id.split('-').pop()}</span>
-                                   <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-md font-medium">{outfit.budget}</span>
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <span className="text-xs font-bold text-gray-400 uppercase block mb-1">Materials</span>
+                                    <p className="text-sm text-gray-600">{outfit.materials}</p>
+                                  </div>
+                                  <div>
+                                    <span className="text-xs font-bold text-gray-400 uppercase block mb-1">Colors</span>
+                                    <p className="text-sm text-gray-600">{outfit.colors}</p>
+                                  </div>
                                 </div>
-                                <p className="text-sm text-gray-700 mb-3 leading-relaxed">{outfit.items}</p>
-                                
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                   <span className="text-xs px-2 py-0.5 border border-gray-200 rounded text-gray-500">{outfit.materials}</span>
-                                   <span className="text-xs px-2 py-0.5 border border-gray-200 rounded text-gray-500">{outfit.colors}</span>
-                                </div>
-                                
-                                <div className="flex gap-2 items-start bg-gray-50 p-3 rounded-lg">
-                                  <Sparkles size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
-                                  <p className="text-xs text-gray-600 italic">
-                                    {outfit.reason}
-                                  </p>
-                                </div>
+                              </div>
+                              
+                              <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 flex gap-3">
+                                <Sparkles size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
+                                <p className="text-sm text-amber-900 italic">
+                                  "{outfit.reason}"
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -199,9 +416,46 @@ export default function PatternDetail() {
                   ))}
                 </div>
               </div>
-            )}
-          </motion.div>
-        </div>
+            </div>
+          </section>
+        )}
+
+        {/* 5. Full Markdown Content */}
+        {pattern.id === 'athflow' && (
+          <section className="bg-[#FFFBF2] shadow-[0_12px_30px_-18px_rgba(60,40,20,0.35)] p-6 sm:p-10 rounded-2xl max-w-3xl mx-auto">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#C9B08A] to-transparent" />
+              <h3 className="text-xl font-serif italic text-[#3A2F23]">Full Guide</h3>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#C9B08A] to-transparent" />
+            </div>
+            
+            <article className="font-serif text-[#2B241C]">
+              <ReactMarkdown 
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h1: ({node, ...props}) => <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#2A2219] mb-8 mt-4" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#2A2219] mt-10 mb-4" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="inline-flex items-center w-fit px-4 py-2 mt-8 mb-3 rounded-full border border-[#C9B08A] bg-[#F6E7CC] text-[#3A2F23] font-semibold tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]" {...props} />,
+                  p: ({node, ...props}) => <p className="my-4 text-[#2B241C] leading-relaxed text-[17px] sm:text-[18px]" {...props} />,
+                  blockquote: ({node, ...props}) => <blockquote className="my-6 pl-5 border-l-4 border-[#C9B08A] italic text-[#3A2F23] bg-[#FBF1DD] rounded-r-lg py-3 pr-4" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc pl-6 my-4 space-y-2 text-[#2B241C] marker:text-[#C9B08A]" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal pl-6 my-4 space-y-2 text-[#2B241C] marker:text-[#C9B08A]" {...props} />,
+                  li: ({node, ...props}) => <li className="pl-2" {...props} />,
+                  hr: ({node, ...props}) => <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-[#C9B08A] to-transparent" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-bold text-[#2A2219]" {...props} />,
+                  a: ({node, ...props}) => <a className="text-[#8B5E3C] hover:text-[#6D492E] underline underline-offset-2 decoration-[#C9B08A]" {...props} />,
+                  table: ({node, ...props}) => <div className="overflow-x-auto my-8 rounded-lg border border-[#EAD9BE]"><table className="w-full border-collapse text-left text-[16px]" {...props} /></div>,
+                  thead: ({node, ...props}) => <thead className="bg-[#F6E7CC]" {...props} />,
+                  th: ({node, ...props}) => <th className="border-b-2 border-[#C9B08A] p-4 font-semibold text-[#3A2F23]" {...props} />,
+                  td: ({node, ...props}) => <td className="border-b border-[#EAD9BE] p-4 text-[#2B241C] bg-[#FFFBF2]" {...props} />,
+                }}
+              >
+                {athflowMarkdown}
+              </ReactMarkdown>
+            </article>
+          </section>
+        )}
+
       </main>
     </div>
   );
